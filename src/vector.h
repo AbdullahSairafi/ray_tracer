@@ -10,6 +10,8 @@ class Vec3d {
 public:
     // Default constructor
     Vec3d(double x = 0.0, double y = 0.0, double z = 0.0);
+    // copy constructor
+    Vec3d(const Vec3d &v);
 
     // getters
     double get_x() const;
@@ -25,6 +27,8 @@ public:
     double l2norm(); // length of vector
     Vec3d& normalize(); // normalize the vector
     
+    // overloaded assignment operator
+    Vec3d& operator=(const Vec3d &v);
 
     // vector operations dot, cross as friend functions
     friend double dot(const Vec3d &v1, const Vec3d &v2);
