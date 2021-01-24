@@ -63,6 +63,7 @@ Vec3d& Vec3d::operator=(const Vec3d &v){
 
     return *this;
 }
+
 // dot and cross products
 double dot(const Vec3d &v1, const Vec3d &v2){
     return (v1.m_x * v2.m_x 
@@ -76,6 +77,7 @@ Vec3d cross(const Vec3d &v1, const Vec3d &v2){
     double k = v1.m_x * v2.m_y - v1.m_y * v2.m_x;
     return Vec3d(i, j, k);
 }
+
 // printing 
 ostream& operator<<(ostream &out, const Vec3d &v){
     out << "<" << v.m_x << ", " << v.m_y << ", " << v.m_z << ">";

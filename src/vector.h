@@ -50,6 +50,7 @@ private:
     Vec3d operator*(double c, const Vec3d &v); // c * vector
     Vec3d operator/(const Vec3d &v, double c);
 
+typedef Vec3d Point;
 
 #endif
 
