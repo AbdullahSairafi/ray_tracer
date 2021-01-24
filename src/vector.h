@@ -37,6 +37,9 @@ public:
     // printing
     friend ostream& operator<<(ostream &out, const Vec3d &v);
 
+    //comparison
+    friend bool operator==(const Vec3d &v1, const Vec3d &v2);
+    friend bool operator!=(const Vec3d &v1, const Vec3d &v2);
 private:
     double m_x;
     double m_y;
