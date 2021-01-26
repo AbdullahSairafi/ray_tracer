@@ -46,6 +46,18 @@ Color operator+(const Color &c1, const Color &c2){
 
     return Color(r, g, b); 
 }
+
+Color operator*(const Color &col, double k){
+    int r = clip(col.get_r() * k);
+    int g = clip(col.get_g() * k);
+    int b = clip(col.get_b() * k);
+    
+    return Color(r, g, b);
+}
+
+Color operator*(double k, const Color &col){
+    return (col * k);
+}
 Shape::Shape(Color col, ShapeType t) : m_col{col}, m_type{t}
 {
 }

@@ -38,6 +38,22 @@ bool ofApp::check_intersection(Ray view_ray, Shape *hit_obj, double &t_low, doub
 
     return hit;
 }
+
+Color ofApp::shading_model(Ray view_ray, Shape *hit_obj, double t){
+    Point intersection_pt = view_ray.get_orig() + t * view_ray.get_dir();
+    Color pix_col = hit_obj->get_color() * ambient_intensity;
+    if(!is_shadow(intersection_pt)){
+        //pix_col = pix_col + ...
+    }
+}
+
+bool ofApp::is_shadow(const Point &intersection_pt){
+    bool is_shadow = false;
+    vector<Vec3d> light_directions;
+    for(int i = 0; i < lights.size(); i++){
+        light_directions.push_back(lights[i] - intersection_pt);
+    }
+}
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     // when exsiting, free allocated resources.

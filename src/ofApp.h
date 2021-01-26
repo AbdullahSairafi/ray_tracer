@@ -29,7 +29,7 @@ public:
 
 	void add_shapes();
 	bool check_intersection(Ray view_ray, Shape *hit_obj, double &t_low, double t_up);
-	Color shading_model(Point intersection, Shape *hit_obj);
+	Color shading_model(Ray view_ray, Shape *hit_obj, double t);
 private:
 	vector<Shape*> pShapes;
 	vector<Point> lights;
@@ -37,4 +37,5 @@ private:
 	ofTexture texColor;
 	int w = 1024;
 	int h = 768;
+	double ambient_intensity = 0.1;
 };

@@ -82,4 +82,6 @@ private:
 int clip(int x);
 
 Color operator+(const Color &c1, const Color &c2); 
+Color operator*(const Color &col, double k);
+Color operator*(double k, const Color &col);
 #endif
