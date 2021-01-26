@@ -15,6 +15,7 @@ public:
     int get_r() const;
     int get_g() const;
     int get_b() const;
+    Color& operator=(const Color &rhs);  
 private:
     int m_r;
     int m_g;
@@ -38,8 +39,8 @@ public:
     virtual Vec3d normal(Point &p) const = 0;
     virtual bool intersect(Ray &r, double &t) = 0;
     
-    ShapeType get_type() const;
-
+    ShapeType get_type() const {return m_type;}
+    Color get_color() const {return m_col;}
  
 
 private:
@@ -79,4 +80,6 @@ private:
 };
 
 int clip(int x);
+
+Color operator+(const Color &c1, const Color &c2); 
 #endif

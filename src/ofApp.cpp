@@ -1,8 +1,10 @@
 #include "ofApp.h"
-
+#include <limits>
 //--------------------------------------------------------------
 void ofApp::setup(){
-
+    
+    colorPixels.allocate(w, h, OF_PIXELS_RGB);
+    // texColor.allocate(colorPixels);
 }
 
 //--------------------------------------------------------------
@@ -12,12 +14,38 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-
+    //ofSetHexColor(0xffffff);
+	texColor.draw(0, 0);
 }
 
+void ofApp::add_shapes(){
+    Sphere *sph0{new Sphere{Point(-1, 0.5,0.5), 0.5, Color(200, 0, 0)}};
+    Sphere *sph1{new Sphere{Point(1, 0.5,0.5), 0.5, Color(0, 0, 200)}};
+    pShapes.push_back(sph0);
+    pShapes.push_back(sph1);
+}
+
+bool ofApp::check_intersection(Ray view_ray, Shape *hit_obj, double &t_low, double t_up){
+    bool hit = false;
+    double t;
+    for(int i = 0; i < pShapes.size(); i++){
+        if(pShapes[i]->intersect(view_ray, t0) && t_low <= t && t < t_up){
+            hit = true;
+            t_up = t;
+            hit_obj = pShapes[i]; // update hit object
+        }
+    }
+
+    return hit;
+}
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+    // when exsiting, free allocated resources.
+    if(key == 27){
+        for(int i = 0; i < pShapes.size(); i++){
+            delete pShapes[i];
+        }
+    }
 }
 
 //--------------------------------------------------------------

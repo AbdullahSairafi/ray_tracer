@@ -28,13 +28,26 @@ int Color::get_b() const {
     return m_b;
 }
 
+Color& Color::operator=(const Color &rhs){
+    if(this == &rhs){
+        return *this;
+    }
+    m_r = rhs.m_r;
+    m_g = rhs.m_g;
+    m_b = rhs.m_b;
 
-Shape::Shape(Color col, ShapeType t) : m_col{col}, m_type{t}
-{
+    return *this;
 }
 
-ShapeType Shape::get_type() const {
-    return m_type;
+Color operator+(const Color &c1, const Color &c2){
+    int r = clip(c1.get_r() + c2.get_r());
+    int g = clip(c1.get_g() + c2.get_g());
+    int b = clip(c1.get_b() + c2.get_b());
+
+    return Color(r, g, b); 
+}
+Shape::Shape(Color col, ShapeType t) : m_col{col}, m_type{t}
+{
 }
 
 Sphere::Sphere(Point cen, double rad, Color col) 

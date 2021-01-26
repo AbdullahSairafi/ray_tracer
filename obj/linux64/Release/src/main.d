@@ -558,7 +558,11 @@ obj/linux64/Release/src/main.o: \
  /home/sairafaa/openframeworks/libs/openFrameworks/3d/of3dUtils.h \
  /home/sairafaa/openframeworks/libs/openFrameworks/3d/ofCamera.h \
  /home/sairafaa/openframeworks/libs/openFrameworks/3d/ofEasyCam.h \
- /home/sairafaa/Desktop/projects/cpp/ray_tracer/src/ofApp.h
+ /home/sairafaa/Desktop/projects/cpp/ray_tracer/src/ofApp.h \
+ /home/sairafaa/Desktop/projects/cpp/ray_tracer/src/vector.h \
+ /home/sairafaa/Desktop/projects/cpp/ray_tracer/src/shapes.h \
+ /home/sairafaa/Desktop/projects/cpp/ray_tracer/src/ray.h \
+ /home/sairafaa/Desktop/projects/cpp/ray_tracer/src/camera.h
 
 /home/sairafaa/openframeworks/libs/openFrameworks/ofMain.h:
 
@@ -1711,3 +1715,11 @@ obj/linux64/Release/src/main.o: \
 /home/sairafaa/openframeworks/libs/openFrameworks/3d/ofEasyCam.h:
 
 /home/sairafaa/Desktop/projects/cpp/ray_tracer/src/ofApp.h:
+
+/home/sairafaa/Desktop/projects/cpp/ray_tracer/src/vector.h:
+
+/home/sairafaa/Desktop/projects/cpp/ray_tracer/src/shapes.h:
+
+/home/sairafaa/Desktop/projects/cpp/ray_tracer/src/ray.h:
+
+/home/sairafaa/Desktop/projects/cpp/ray_tracer/src/camera.h:
