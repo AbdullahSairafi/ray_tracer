@@ -29,7 +29,7 @@ bool ofApp::check_intersection(Ray view_ray, Shape *hit_obj, double &t_low, doub
     bool hit = false;
     double t;
     for(int i = 0; i < pShapes.size(); i++){
-        if(pShapes[i]->intersect(view_ray, t0) && t_low <= t && t < t_up){
+        if(pShapes[i]->intersect(view_ray, t) && t_low <= t && t < t_up){
             hit = true;
             t_up = t;
             hit_obj = pShapes[i]; // update hit object
@@ -49,10 +49,19 @@ Color ofApp::shading_model(Ray view_ray, Shape *hit_obj, double t){
 
 bool ofApp::is_shadow(const Point &intersection_pt){
     bool is_shadow = false;
+    double epsilon = 0.001;
+    Shape *shadow_obj;
     vector<Vec3d> light_directions;
     for(int i = 0; i < lights.size(); i++){
         light_directions.push_back(lights[i] - intersection_pt);
     }
+    // generate rays for each light source
+    for(int i = 0; i < light_directions.size(); i++){ 
+        Point sh_ray_origin = intersection_pt + light_directions[i].normalize() * epsilon;
+        Ray shadow_ray{sh_ray_origin, light_directions[i]};
+        is_shadow = check_intersection(shadow_ray, shadow_obj, 0.0, numeric_limits<double>::infinity);
+    }
+    return is_shadow;
 }
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){

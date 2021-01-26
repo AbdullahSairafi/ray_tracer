@@ -30,6 +30,7 @@ public:
 	void add_shapes();
 	bool check_intersection(Ray view_ray, Shape *hit_obj, double &t_low, double t_up);
 	Color shading_model(Ray view_ray, Shape *hit_obj, double t);
+	bool is_shadow(const Point &intersection_pt);
 private:
 	vector<Shape*> pShapes;
 	vector<Point> lights;
@@ -38,4 +39,5 @@ private:
 	int w = 1024;
 	int h = 768;
 	double ambient_intensity = 0.1;
+	double light_intensity = 0.3;
 };
