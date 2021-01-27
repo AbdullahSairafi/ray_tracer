@@ -1,5 +1,6 @@
 #include "ofApp.h"
 #include <limits>
+#include <algorithm> 
 //--------------------------------------------------------------
 void ofApp::setup(){
     
@@ -35,33 +36,50 @@ bool ofApp::check_intersection(Ray view_ray, Shape *hit_obj, double &t_low, doub
             hit_obj = pShapes[i]; // update hit object
         }
     }
-
+    if(hit_obj == nullptr){ // enforce a valid object in hit_obj pointer.
+        return false;
+    }
     return hit;
 }
 
 Color ofApp::shading_model(Ray view_ray, Shape *hit_obj, double t){
     Point intersection_pt = view_ray.get_orig() + t * view_ray.get_dir();
     Color pix_col = hit_obj->get_color() * ambient_intensity;
-    if(!is_shadow(intersection_pt)){
-        //pix_col = pix_col + ...
+    for(int i = 0; i < lights.size(); i++){
+        if(!is_shadow(lights[i],  intersection_pt)){
+            pix_col = pix_col + diffuse_color(lights[i], intersection_pt, hit_obj) + specular_color(lights[i], intersection_pt, hit_obj);
+        }
     }
+    
 }
 
-bool ofApp::is_shadow(const Point &intersection_pt){
+bool ofApp::is_shadow(const Point &light_src, const Point &intersection_pt){
     bool is_shadow = false;
     double epsilon = 0.001;
-    Shape *shadow_obj;
-    vector<Vec3d> light_directions;
-    for(int i = 0; i < lights.size(); i++){
-        light_directions.push_back(lights[i] - intersection_pt);
-    }
-    // generate rays for each light source
-    for(int i = 0; i < light_directions.size(); i++){ 
-        Point sh_ray_origin = intersection_pt + light_directions[i].normalize() * epsilon;
-        Ray shadow_ray{sh_ray_origin, light_directions[i]};
-        is_shadow = check_intersection(shadow_ray, shadow_obj, 0.0, numeric_limits<double>::infinity);
-    }
+    Shape *shadow_obj = nullptr;
+    Vec3d light_dir = (light_src - intersection_pt).normalize();
+    // generate shadow ray for light source
+    Point sh_ray_origin = intersection_pt + light_dir * epsilon; // add offset to avoid self-intersection
+    Ray shadow_ray{sh_ray_origin, light_dir};
+    is_shadow = check_intersection(shadow_ray, shadow_obj, 0.0, numeric_limits<double>::infinity);
     return is_shadow;
+}
+
+Color ofApp::diffuse_color(const Point &light, const Point &intersection_pt, Shape *hit_obj){
+    Vec3d light_dir = (light - intersection_pt).normalize();
+    Vec3d normal = hit_obj->normal();
+    Color diff_col = hit_obj->get_color() * light_intensity * std::max(0.0, dot(normal, light_dir));
+    return diff_col;
+}
+
+Color ofApp::specular_color(const Point &light, const Point &intersection_pt, Shape *hit_obj){
+    // for info look up this wiki link
+    Vec3d light_dir = (light - intersection_pt).normalize();
+    Vec3d v = (camera.get_orig() - intersection_pt).normalize();
+    Vec3d h = (light_dir + v).normalize();
+    Vec3d normal = hit_obj->normal();
+    //Color spec_col = ...;
+    return spec_col;
 }
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){

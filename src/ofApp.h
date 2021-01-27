@@ -30,7 +30,9 @@ public:
 	void add_shapes();
 	bool check_intersection(Ray view_ray, Shape *hit_obj, double &t_low, double t_up);
 	Color shading_model(Ray view_ray, Shape *hit_obj, double t);
-	bool is_shadow(const Point &intersection_pt);
+	bool is_shadow(const Point &light_src, const Point &intersection_pt);
+	Color diffuse_color(const Point &light, const Point &intersection_pt, Shape *hit_obj);
+	Color specular_color(const Point &light, const Point &intersection_pt, Shape *hit_obj);
 private:
 	vector<Shape*> pShapes;
 	vector<Point> lights;
@@ -41,3 +43,4 @@ private:
 	double ambient_intensity = 0.1;
 	double light_intensity = 0.3;
 };
+
