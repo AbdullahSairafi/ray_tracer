@@ -1,6 +1,7 @@
 #include "ofApp.h"
 #include <limits>
 #include <algorithm> 
+#include <cmath>
 //--------------------------------------------------------------
 void ofApp::setup(){
     
@@ -78,7 +79,7 @@ Color ofApp::specular_color(const Point &light, const Point &intersection_pt, Sh
     Vec3d v = (camera.get_orig() - intersection_pt).normalize();
     Vec3d h = (light_dir + v).normalize();
     Vec3d normal = hit_obj->normal();
-    //Color spec_col = ...;
+    Color spec_col = Color(128, 128, 128) * light_intensity * std::pow(std::max(0.0, dot(normal, h)));
     return spec_col;
 }
 //--------------------------------------------------------------
