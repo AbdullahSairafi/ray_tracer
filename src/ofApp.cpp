@@ -22,7 +22,7 @@ void ofApp::draw(){
 
 void ofApp::add_shapes(){
     Sphere *sph0{new Sphere{Point(-1, 0.5,0.5), 0.5, Color(200, 0, 0)}};
-    Sphere *sph1{new Sphere{Point(1, 0.5,0.5), 0.5, Color(0, 0, 200)}};
+    Sphere *sph1{new Sphere{Point(1, 0.5,0.5), 0.5, Color(25, 79, 43)}};
     pShapes.push_back(sph0);
     pShapes.push_back(sph1);
 }
