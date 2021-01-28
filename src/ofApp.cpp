@@ -7,6 +7,7 @@ void ofApp::setup(){
     
     colorPixels.allocate(w, h, OF_PIXELS_RGB);
     // texColor.allocate(colorPixels);
+    add_shapes();
 }
 
 //--------------------------------------------------------------
@@ -52,6 +53,7 @@ Color ofApp::shading_model(Ray view_ray, Shape *hit_obj, double t){
         }
     }
     
+    return pix_col;
 }
 
 bool ofApp::is_shadow(const Point &light_src, const Point &intersection_pt){
@@ -81,6 +83,27 @@ Color ofApp::specular_color(const Point &light, const Point &intersection_pt, Sh
     Vec3d normal = hit_obj->normal();
     Color spec_col = Color(128, 128, 128) * light_intensity * std::pow(std::max(0.0, dot(normal, h)));
     return spec_col;
+}
+
+void ofApp::ray_tracer(){
+    PrespectiveCamera camere{Point(0.0, 0.0, -1.0), Point(0.0, 0.0, 0.0), Vec3d(0.0, 1.0, 0.0)};
+    
+    for(int i = 0; i < w; i++){
+        for(int j = 0; j < h; j++){ 
+            Ray ray{camere.make_ray(i, j)};
+            Shape *hit_obj = nullptr;
+            double t = std::numeric_limits<double>::infinity
+            if(check_intersection(ray, hit_obj, 0.0, t)){
+                Color col = shading_model(ray, hit_obj, t);
+                colorPiels.setColor(i, j, ofColor(col.get_r(), col.get_g(), col.get_b()));
+            }
+            else{ // backgroud color
+               colorPixels.setColor(i, j, ofColor(0, 0, 0));
+            }
+        }
+    }
+    
+    // colorPixels.setColor(x, y, ofColor(pix_col.r, pix_col.g, pix_col.b))
 }
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
