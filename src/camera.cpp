@@ -1,10 +1,8 @@
 #include "camera.h"
-// #include "vector.h"
-// #include "ray.h"
 
 using namespace std;
 
-PrespectiveCamera::PrespectiveCamera(Point origin, Point target, Vec3d upguide)
+PrespectiveCamera::PrespectiveCamera(const Point &origin, const Point &target, const Vec3d &upguide)
     : m_origin{origin}, m_target{target}, m_upguide{upguide} 
 {
     b_forward = (target - origin).normalize();
@@ -24,14 +22,3 @@ void PrespectiveCamera::print_info(){
     cout << "origin = " << m_origin << endl;
     cout << "target = " << m_target << endl;
 }
-// void PrespectiveCamera::update_origin(Point origin){
-    
-// }
-
-// void PrespectiveCamera::update_target(Point target){
-    
-// }
-
-// void PrespectiveCamera::update_basis(){
-
-// }

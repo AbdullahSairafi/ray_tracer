@@ -75,15 +75,18 @@ Vec3d Sphere::normal(const Point &p) const {
 
 bool Sphere::intersect(Ray &r, double &t){
     bool hit = false;
-
+    // cout << "ray dir = " << r.get_dir() << endl;
     double a = dot(r.get_dir(), r.get_dir());
     double b = 2 * dot(r.get_orig() - m_cen, r.get_dir());
     double c = dot(r.get_orig() - m_cen, r.get_orig() - m_cen) - m_rad * m_rad;
 
     double discriminant = b * b - 4 * a * c;
+    // cout << discriminant << endl;
     if(discriminant > 0.0 ) { // there is a solution for quadratic formula
         double t0 = (-b - sqrt(discriminant)) / (2 * a);
         double t1 = (-b + sqrt(discriminant)) / (2 * a);
+        
+        cout << "dicriminant is positive" << endl;
 
         if(t0 < 0.0 && t1 < 0.0){ // both are negative
             hit = false;

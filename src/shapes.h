@@ -35,7 +35,7 @@ class Shape
 
 public:
     Shape(Color col, ShapeType t);
-    ~Shape() = default;
+    virtual ~Shape() = default;
     virtual Vec3d normal(const Point &p) const = 0;
     virtual bool intersect(Ray &r, double &t) = 0;
     

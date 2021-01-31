@@ -33,16 +33,21 @@ public:
 	Color shading_model(Ray view_ray, Shape *hit_obj, double t);
 	bool is_shadow(const Point &light_src, const Point &intersection_pt);
 	Color diffuse_color(const Point &light, const Point &intersection_pt, Shape *hit_obj);
-	Color specular_color(const PrespectiveCamera &cam, const Point &light, const Point &intersection_pt, Shape *hit_obj);
+	Color specular_color(const Point &light, const Point &intersection_pt, Shape *hit_obj);
 	void ray_tracer();
 private:
-	vector<Shape*> pShapes;
-	vector<Point> lights;
-	ofPixels colorPixels;
-	ofTexture texColor;
 	int w = 1024;
 	int h = 768;
+	ofPixels colorPixels;
+	ofTexture texColor;
+	vector<Shape*> pShapes;
+	vector<Point> lights;
 	double ambient_intensity = 0.1;
 	double light_intensity = 0.3;
+	PrespectiveCamera *cam;
+	double l = -2.0;
+	double r = 2.0;
+	double bm = -1.5;
+	double tp = 1.5;
 };
 
