@@ -28,7 +28,7 @@ void ofApp::add_shapes(){
     pShapes.push_back(sph1);
 }
 
-bool ofApp::check_intersection(Ray view_ray, Shape *hit_obj, double &t_low, double t_up){
+bool ofApp::check_intersection(Ray view_ray, Shape *hit_obj, double t_low, double &t_up){
     bool hit = false;
     double t;
     for(int i = 0; i < pShapes.size(); i++){
@@ -64,24 +64,25 @@ bool ofApp::is_shadow(const Point &light_src, const Point &intersection_pt){
     // generate shadow ray for light source
     Point sh_ray_origin = intersection_pt + light_dir * epsilon; // add offset to avoid self-intersection
     Ray shadow_ray{sh_ray_origin, light_dir};
-    is_shadow = check_intersection(shadow_ray, shadow_obj, 0.0, numeric_limits<double>::infinity);
+    double t_up = std::numeric_limits<double>::max();
+    is_shadow = check_intersection(shadow_ray, shadow_obj, 0.0, t_up);
     return is_shadow;
 }
 
 Color ofApp::diffuse_color(const Point &light, const Point &intersection_pt, Shape *hit_obj){
     Vec3d light_dir = (light - intersection_pt).normalize();
-    Vec3d normal = hit_obj->normal();
+    Vec3d normal = hit_obj->normal(intersection_pt);
     Color diff_col = hit_obj->get_color() * light_intensity * std::max(0.0, dot(normal, light_dir));
     return diff_col;
 }
 
-Color ofApp::specular_color(const Point &light, const Point &intersection_pt, Shape *hit_obj){
+Color ofApp::specular_color(const PrespectiveCamera &cam, const Point &light, const Point &intersection_pt, Shape *hit_obj){
     // for info look up this wiki link
     Vec3d light_dir = (light - intersection_pt).normalize();
-    Vec3d v = (camera.get_orig() - intersection_pt).normalize();
+    Vec3d v = (cam.get_orig() - intersection_pt).normalize();
     Vec3d h = (light_dir + v).normalize();
-    Vec3d normal = hit_obj->normal();
-    Color spec_col = Color(128, 128, 128) * light_intensity * std::pow(std::max(0.0, dot(normal, h)));
+    Vec3d normal = hit_obj->normal(intersection_pt);
+    Color spec_col = Color(128, 128, 128) * light_intensity * std::pow(std::max(0.0, dot(normal, h)), 100);
     return spec_col;
 }
 
@@ -92,13 +93,13 @@ void ofApp::ray_tracer(){
         for(int j = 0; j < h; j++){ 
             Ray ray{camere.make_ray(i, j)};
             Shape *hit_obj = nullptr;
-            double t = std::numeric_limits<double>::infinity
+            double t = std::numeric_limits<double>::max();
             if(check_intersection(ray, hit_obj, 0.0, t)){
                 Color col = shading_model(ray, hit_obj, t);
-                colorPiels.setColor(i, j, ofColor(col.get_r(), col.get_g(), col.get_b()));
+                colorPixels.setColor(i, j, ofColor(col.get_r(), col.get_g(), col.get_b()));
             }
             else{ // backgroud color
-               colorPixels.setColor(i, j, ofColor(0, 0, 0));
+                colorPixels.setColor(i, j, ofColor(0, 0, 0));
             }
         }
     }

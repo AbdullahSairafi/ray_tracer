@@ -13,8 +13,10 @@ class PrespectiveCamera{
 public:
     PrespectiveCamera(Point origin, Point target, Vec3d upguide);
     Ray make_ray(double u, double v);
-    // void update_origin(Point origin);
-    // void update_target(Point target);
+    const Point& get_orig();
+    void set_origin(Point origin);
+    void set_target(Point target);
+    void set_upguide(Vec3d upguide);
     void print_info();
 private:
     Vec3d b_up;

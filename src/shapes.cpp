@@ -67,7 +67,7 @@ Sphere::Sphere(Point cen, double rad, Color col)
 {
 }
 
-Vec3d Sphere::normal(Point &p) const {
+Vec3d Sphere::normal(const Point &p) const {
     Vec3d normal = 2 * (p - m_cen);
     normal.normalize();
     return normal;

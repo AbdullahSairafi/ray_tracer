@@ -36,7 +36,7 @@ class Shape
 public:
     Shape(Color col, ShapeType t);
     ~Shape() = default;
-    virtual Vec3d normal(Point &p) const = 0;
+    virtual Vec3d normal(const Point &p) const = 0;
     virtual bool intersect(Ray &r, double &t) = 0;
     
     ShapeType get_type() const {return m_type;}
@@ -61,7 +61,7 @@ public:
     /* normal: Return a normal vector to a given point on the sphere.
      * @p: point to calculate normal at.
     */
-    virtual Vec3d normal(Point &p) const override;
+    virtual Vec3d normal(const Point &p) const override;
 
     /* intersect: finds an intersection point with the sphere if exsists
      * @r: ray to to be check if intersects the sphere.
