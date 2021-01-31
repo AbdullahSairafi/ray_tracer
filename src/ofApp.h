@@ -29,7 +29,8 @@ public:
 
 	
 	void add_shapes();
-	bool check_intersection(Ray view_ray, Shape *hit_obj, double t_low, double &t_up);
+	void add_lights();
+	bool check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, double &t_up);
 	Color shading_model(Ray view_ray, Shape *hit_obj, double t);
 	bool is_shadow(const Point &light_src, const Point &intersection_pt);
 	Color diffuse_color(const Point &light, const Point &intersection_pt, Shape *hit_obj);

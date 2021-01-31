@@ -85,8 +85,6 @@ bool Sphere::intersect(Ray &r, double &t){
     if(discriminant > 0.0 ) { // there is a solution for quadratic formula
         double t0 = (-b - sqrt(discriminant)) / (2 * a);
         double t1 = (-b + sqrt(discriminant)) / (2 * a);
-        
-        cout << "dicriminant is positive" << endl;
 
         if(t0 < 0.0 && t1 < 0.0){ // both are negative
             hit = false;

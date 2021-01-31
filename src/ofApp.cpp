@@ -6,8 +6,11 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     add_shapes();
-    cam = new PrespectiveCamera{Point{0.0, 0.0, -1.0}, Point{}, Vec3d{0.0, 1.0, 0.0}};
-    cam->print_info();
+    add_lights();
+    cout << "num lights = " << lights.size() << endl;
+    cout << "light location = " << lights[0] << endl;
+    cam = new PrespectiveCamera{Point{0.0, 0.0, -2.0}, Point{}, Vec3d{0.0, 1.0, 0.0}};
+    // cam->print_info();
     colorPixels.allocate(w, h, OF_PIXELS_RGB);
     ray_tracer();
     texColor.allocate(colorPixels);
@@ -20,18 +23,22 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    ofSetHexColor(0xffffff);
+    // ofSetHexColor(0xffffff);
 	texColor.draw(0, 0);
 }
 
 void ofApp::add_shapes(){
-    Sphere *sph0{new Sphere{Point(-1, 0.5,0.5), 0.5, Color(200, 0, 0)}};
+    Sphere *sph0{new Sphere{Point(-1, 0.5,0.5), 0.5, Color(200, 100, 100)}};
     Sphere *sph1{new Sphere{Point(1, 0.5,0.5), 0.5, Color(25, 79, 43)}};
     pShapes.push_back(sph0);
     pShapes.push_back(sph1);
 }
 
-bool ofApp::check_intersection(Ray view_ray, Shape *hit_obj, double t_low, double &t_up){
+void ofApp::add_lights(){
+    lights.push_back(Point{0.0, 3.0, 0.0});
+}
+
+bool ofApp::check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, double &t_up){
     bool hit = false;
     double t;
     for(int i = 0; i < pShapes.size(); i++){
@@ -53,7 +60,7 @@ Color ofApp::shading_model(Ray view_ray, Shape *hit_obj, double t){
     Color pix_col = hit_obj->get_color() * ambient_intensity;
     for(int i = 0; i < lights.size(); i++){
         if(!is_shadow(lights[i],  intersection_pt)){
-            pix_col = pix_col + diffuse_color(lights[i], intersection_pt, hit_obj) + specular_color(lights[i], intersection_pt, hit_obj);
+            pix_col = pix_col + diffuse_color(lights[i], intersection_pt, hit_obj);// + specular_color(lights[i], intersection_pt, hit_obj);
         }
     }
     
@@ -99,9 +106,9 @@ void ofApp::ray_tracer(){
             Ray ray{cam->make_ray(u, v)};
             Shape *hit_obj = nullptr;
             double t = std::numeric_limits<double>::max();
-            if(check_intersection(ray, hit_obj, 0.0, t)){
-                cout << "hit object" << endl; 
+            if(check_intersection(ray, hit_obj, 0.0, t)){ 
                 Color col = shading_model(ray, hit_obj, t);
+                // cout << "rbg = " << col.get_r() << " " << col.get_g() << " " << col.get_b() << endl;
                 colorPixels.setColor(i, j, ofColor(col.get_r(), col.get_g(), col.get_b()));
             }
             else{ // backgroud color
