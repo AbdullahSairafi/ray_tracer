@@ -37,8 +37,8 @@ public:
 	Color specular_color(const Point &light, const Point &intersection_pt, Shape *hit_obj);
 	void ray_tracer();
 private:
-	int w = 1024;
-	int h = 768;
+	int w = 2048;
+	int h = 1536;
 	ofPixels colorPixels;
 	ofTexture texColor;
 	vector<Shape*> pShapes;

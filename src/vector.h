@@ -47,11 +47,11 @@ private:
 };
 
  // overloaded operators +, -, *, /
-    Vec3d operator+(const Vec3d &v1, const Vec3d &v2);
-    Vec3d operator-(const Vec3d &v1, const Vec3d &v2);
-    Vec3d operator*(const Vec3d &v, double c); // vector * c
-    Vec3d operator*(double c, const Vec3d &v); // c * vector
-    Vec3d operator/(const Vec3d &v, double c);
+Vec3d operator+(const Vec3d &v1, const Vec3d &v2);
+Vec3d operator-(const Vec3d &v1, const Vec3d &v2);
+Vec3d operator*(const Vec3d &v, double c); // vector * c
+Vec3d operator*(double c, const Vec3d &v); // c * vector
+Vec3d operator/(const Vec3d &v, double c);
 
 typedef Vec3d Point;
 

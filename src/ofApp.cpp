@@ -28,15 +28,15 @@ void ofApp::draw(){
 }
 
 void ofApp::add_shapes(){
-    Sphere *sph0{new Sphere{Point(-1, 0.0,0.0), 0.5, Color(128, 0, 32)}};
-    Sphere *sph1{new Sphere{Point(1, -0.5,0.0), 0.5, Color(25, 90, 43)}};
+    Sphere *sph0{new Sphere{Point(-0.5, 0.0, 0.0), 0.5, Color(128, 0, 32)}};
+    Sphere *sph1{new Sphere{Point(0.5, 0.0, 0.0), 0.5, Color(25, 90, 43)}};
     pShapes.push_back(sph0);
     pShapes.push_back(sph1);
 }
 
 void ofApp::add_lights(){
     lights.push_back(Point{0.0, 3.0, 0.0});
-    // lights.push_back(Point{3.0, 3.0, 0.0});
+    lights.push_back(Point{3.0, 3.0, 0.0});
 }
 
 bool ofApp::check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, double &t_up){
@@ -105,7 +105,7 @@ void ofApp::ray_tracer(){
             // start from top left corner of the screen.
             double u = l + ((r - l) * (i + 0.5)) / (double)w;
             double v = tp - ((tp - bm) * (j + 0.5)) / (double)h;
-            
+
             Ray ray{cam->make_ray(u, v)};
             Shape *hit_obj = nullptr;
             double t = std::numeric_limits<double>::max();
@@ -114,8 +114,8 @@ void ofApp::ray_tracer(){
                 // cout << "rbg = " << col.get_r() << " " << col.get_g() << " " << col.get_b() << endl;
                 colorPixels.setColor(i, j, ofColor(col.get_r(), col.get_g(), col.get_b()));
             }
-            else{ // backgroud color
-                colorPixels.setColor(i, j, ofColor(255, 255, 255));
+            else{ // backgroud color (black)
+                colorPixels.setColor(i, j, ofColor(0, 0, 0));
             }
         }
     }
