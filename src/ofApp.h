@@ -43,8 +43,8 @@ private:
 	ofTexture texColor;
 	vector<Shape*> pShapes;
 	vector<Point> lights;
-	double ambient_intensity = 0.1;
-	double light_intensity = 0.3;
+	double ambient_intensity = 0.6;
+	double light_intensity = 1.0;
 	PrespectiveCamera *cam;
 	double l = -2.0;
 	double r = 2.0;

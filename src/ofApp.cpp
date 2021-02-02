@@ -9,8 +9,8 @@ void ofApp::setup(){
     add_lights();
     cout << "num lights = " << lights.size() << endl;
     cout << "light location = " << lights[0] << endl;
-    cam = new PrespectiveCamera{Point{0.0, 0.0, -2.0}, Point{}, Vec3d{0.0, 1.0, 0.0}};
-    // cam->print_info();
+    cam = new PrespectiveCamera{Point{0.0, 0.0, 2.0}, Point{}, Vec3d{0.0, 1.0, 0.0}};
+    cam->print_info();
     colorPixels.allocate(w, h, OF_PIXELS_RGB);
     ray_tracer();
     texColor.allocate(colorPixels);
@@ -28,14 +28,15 @@ void ofApp::draw(){
 }
 
 void ofApp::add_shapes(){
-    Sphere *sph0{new Sphere{Point(-1, 0.5,0.5), 0.5, Color(200, 100, 100)}};
-    Sphere *sph1{new Sphere{Point(1, 0.5,0.5), 0.5, Color(25, 79, 43)}};
+    Sphere *sph0{new Sphere{Point(-1, 0.0,0.0), 0.5, Color(128, 0, 32)}};
+    Sphere *sph1{new Sphere{Point(1, -0.5,0.0), 0.5, Color(25, 90, 43)}};
     pShapes.push_back(sph0);
     pShapes.push_back(sph1);
 }
 
 void ofApp::add_lights(){
     lights.push_back(Point{0.0, 3.0, 0.0});
+    // lights.push_back(Point{3.0, 3.0, 0.0});
 }
 
 bool ofApp::check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, double &t_up){
@@ -60,7 +61,7 @@ Color ofApp::shading_model(Ray view_ray, Shape *hit_obj, double t){
     Color pix_col = hit_obj->get_color() * ambient_intensity;
     for(int i = 0; i < lights.size(); i++){
         if(!is_shadow(lights[i],  intersection_pt)){
-            pix_col = pix_col + diffuse_color(lights[i], intersection_pt, hit_obj);// + specular_color(lights[i], intersection_pt, hit_obj);
+            pix_col = pix_col + diffuse_color(lights[i], intersection_pt, hit_obj) + specular_color(lights[i], intersection_pt, hit_obj);
         }
     }
     
@@ -101,8 +102,10 @@ void ofApp::ray_tracer(){
     
     for(int i = 0; i < w; i++){
         for(int j = 0; j < h; j++){
+            // start from top left corner of the screen.
             double u = l + ((r - l) * (i + 0.5)) / (double)w;
-            double v = bm + ((tp - bm) * (j + 0.5)) / (double)h;
+            double v = tp - ((tp - bm) * (j + 0.5)) / (double)h;
+            
             Ray ray{cam->make_ray(u, v)};
             Shape *hit_obj = nullptr;
             double t = std::numeric_limits<double>::max();
