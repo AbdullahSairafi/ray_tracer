@@ -2,6 +2,7 @@
 #define MATRIX_H
 
 #include <vector>
+#include <cassert>
 
 using namespace std;
 
@@ -37,6 +38,8 @@ public:
     friend vecmul(const vector<T> &v, const Matrix &m);
     friend vecmul(const Matrix &m, const vector<T> &v);
 
+    // overload access operator()
+
 private:
     int m_rows;
     int m_cols;
@@ -55,13 +58,38 @@ Matrix<T>::Matrix(int r, int c, T val)
 
 template <class T>
 Matrix<T>::Matrix(const Matrix &rhs){
-    if(this == &rhs){ // avoid self-assignment
+    *this = rhs; // use overloaded operator= function
+}
+
+template <class T> 
+Matrix& Matrix<T>::operator=(const Matrix &rhs){
+   if(this == &rhs){ // avoid self-assignment
         return *this;
     }
     m_rows = rhs.m_rows;
     m_cols = rhs.m_cols;
-    m = rhs.m; // vectors already provide implementation
+
+    for(int i = 0; i < m_rows; i++){
+        for(int j = 0; j < m_cols; j++){
+            m[i][j] = rhs(i,j);
+        }
+    }
+
+    return *this;
 }
 
+template <class T>
+Matrix Matrix<T>::operator+(const Matrix &m1, const Matrix &m2){
+    // make sure m1 and m2 are compatible for addition
+    assert(m1.get_rows() == m2.get_rows() && m1.get_cols() == m2.get_cols());
+    // 0.0 will be typecaseted to the proper type.
+    Matrix result{m1.get_rows(), m1.get_cols(), 0.0};
+    for(int i = 0; i < m1.get_rows(); i++{
+        for(int j = 0; j < m1.get_cols(); j++){
+            result(i,j) = m1(i,j) + m2(i,j);
+        }
+    }
+    return result;
+}
 
 #endif
