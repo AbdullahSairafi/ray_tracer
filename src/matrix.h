@@ -38,11 +38,11 @@ public:
     friend Matrix<T> operator*(const T &c, const Matrix<T> &m);
 
     // matrix vector operations
-    friend vector<T> operator*(const Matrix<T> &m, const vector<T> &v);
-    friend vector<T> operator*(const vector<T> &v, const Matrix<T> &m);
-    friend vecmul(const vector<T> &v, const Matrix<T> &m);
-    friend vecmul(const Matrix<T> &m, const vector<T> &v);
-
+    friend Matrix<T> operator*(const Matrix<T> &m, const vector<T> &v);
+    friend Matrix<T> operator*(const vector<T> &v, const Matrix<T> &m);
+    friend Matrix<T> vecmul(const Matrix<T> &m, const vector<T> &v);
+    friend Matrix<T> vecmul(const vector<T> &v, const Matrix<T> &m);
+    
     // overload access operator()
     T& operator()(int i, int j);
     const T& operator()(int i, int j) const;
@@ -170,4 +170,46 @@ template <class T>
 Matrix<T> Matrix<T>::operator*(const T &c, const Matrix<T> &m){
     return m * c;
 }
+
+template <class T>
+Matrix<T> Matrix<T>::operator*(const Matrix<T> &m, const vector<T> &v){
+    assert(m.m_cols == v.size()); // check compatibility
+    bool row_vec = false;
+    Matrix<T> vec_mat = vec_to_mat(v, row_vec); // get a matrix for the input vector
+    return m * vec_mat;
+}
+
+template <class T>
+Matrix<T> Matrix<T>::operator*(const vector<T> &v, const Matrix<T> &m){
+    assert(m.m_rows == v.size()); // check compatibility
+    bool row_vec = true;
+    Matrix<T> vec_mat = vec_to_mat(v, row_vec); // get a matrix for the input vector
+    return vec_mat * m;
+}
+
+template <class T>
+Matrix<T> Matrix<T>::vecmul(const Matrix<T> &m, const vector<T> &v){
+    return m * v;
+}
+
+template <class T> 
+Matrix<T> Matrix<T>::vecmul(const vector<T> &v, const Matrix<T> &m){
+    return v * m;
+}
+
+template <class T> 
+T& Matrix<T>::operator()(int i, int j){
+    assert(0 <= i && i < m_rows);
+    assert(0 <= j && j < m_cols);
+    return m[i][j];
+}
+
+template <class T>
+const T& Matrix<T>::operator()(int i, int j) const {
+    assert(0 <= i && i < m_rows);
+    assert(0 <= j && j < m_cols);
+    return m[i][j];
+}
+
+
 #endif
