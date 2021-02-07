@@ -11,7 +11,7 @@ using namespace std;
 template <class T> 
 class Matrix;
 
-// // matrix matrix operations
+// matrix matrix operations
 template <class T>
 Matrix<T> operator+(const Matrix<T> &m1, const Matrix<T> &m2);
 template <class T>
@@ -41,6 +41,10 @@ Matrix<T> vecmul(const vector<T> &v, const Matrix<T> &m);
 // printing 
 template <class T>
 ostream& operator<<(ostream &out, const Matrix<T> &m);
+
+// comparison (for testing purposes)
+template <class T>
+bool operator==(const Matrix<T> &m1, const Matrix<T> &m2);
 
 template <class T>
 class Matrix{
@@ -87,6 +91,9 @@ public:
    
     // printing 
     friend ostream& operator<< <T> (ostream &out, const Matrix<T> &m);
+    
+    // comparison
+    friend bool operator== <>(const Matrix<T> &m1, const Matrix<T> &m2);
 
 private:
     int m_rows;
@@ -211,7 +218,7 @@ Matrix<T> operator*(const Matrix<T> &m1, const Matrix<T> &m2){
     Matrix<T> result{m1.get_rows(), m2.get_cols(), T{}};
     for(int i = 0; i < result.m_rows; i++){
         for(int j = 0; j < result.m_cols; j++){
-            for(int k; k < m1.m_cols; k++){
+            for(int k = 0; k < m1.m_cols; k++){
                 result(i,j) += m1(i,k) * m2(k,j);
             }
         }
@@ -294,6 +301,22 @@ ostream& operator<<(ostream &out, const Matrix<T> &m){
     }
 
     return out;
+}
+
+template <class T>
+bool operator==(const Matrix<T> &m1, const Matrix<T> &m2){
+    // ensure compatibility for comparison 
+    assert(m1.get_rows() == m2.get_rows() && m1.get_cols() == m2.get_cols());
+    int rows = m1.m_rows;
+    int cols = m1.m_cols;
+    for(int i = 0; i < rows; i++){
+        for(int j = 0; j < cols; j++){
+            if(m1(i,j) != m2(i,j)){
+               return false;
+            }
+        }
+    }
+    return true;
 }
 
 template <class T>
