@@ -51,15 +51,15 @@ class Matrix{
 
 public:
     // default ctor
-    Matrix(int r, int c, T val);
+    Matrix(size_t r, size_t c, T val);
     // copy ctor
     Matrix(const Matrix &rhs);
     // list intitilizer ctor
     Matrix(initializer_list<initializer_list<T>> list);
 
     // matrix info 
-    int get_rows() const {return m_rows;}
-    int get_cols() const {return m_cols;}
+    size_t get_rows() const {return m_rows;}
+    size_t get_cols() const {return m_cols;}
 
     // overloaded assignment operator
     Matrix<T>& operator=(const Matrix<T> &rhs);
@@ -96,8 +96,8 @@ public:
     friend bool operator== <>(const Matrix<T> &m1, const Matrix<T> &m2);
 
 private:
-    int m_rows;
-    int m_cols;
+    size_t m_rows;
+    size_t m_cols;
     vector<vector<T>> m;
 };
 
@@ -105,7 +105,7 @@ template <class T>
 Matrix<T> vec_to_mat(const vector<T> &v, bool row_vec = false);
 
 template <class T>
-Matrix<T>::Matrix(int r, int c, T val)
+Matrix<T>::Matrix(size_t r, size_t c, T val)
     : m_rows{r}, m_cols{c} 
 {
     m.resize(m_rows);
@@ -234,8 +234,8 @@ Matrix<T> matmul(const Matrix<T> &m1, const Matrix<T> &m2){
 
 template <class T>
 Matrix<T> operator*(const Matrix<T> &m, const T &c){
-    int rows = m.get_rows();
-    int cols = m.get_cols();
+    size_t rows = m.get_rows();
+    size_t cols = m.get_cols();
     Matrix<T> result{rows, cols, T{}};
     
     for(int i = 0; i < rows; i++){
@@ -340,5 +340,6 @@ Matrix<T> vec_to_mat(const vector<T> &v, bool row_vec){
     }
 }
 
+// typedef Matrix<double, 4, 4> Matrix4d;
 
 #endif
