@@ -15,9 +15,12 @@ public:
     Ray make_ray(double u, double v);
     const Point& get_orig(){return m_origin;}
     // candidates for inline functions
-    void set_origin(const Point &origin){m_origin = origin;}
-    void set_target(const Point &target){m_target = target;}
+    // void set_origin(const Point &origin){m_origin = origin;}
+    // void set_target(const Point &target){m_target = target;}
     void set_upguide(const Vec3d &upguide){m_upguide = upguide;}
+    void set_basis(const Vec3d &upguide = Vec3d(0.0, 1.0, 0.0));
+    void move_camera(char direction);
+    void move_target(char direction);
     // for debugging purposes
     void print_info();
 private:
@@ -27,6 +30,5 @@ private:
     Point m_origin;
     Point m_target;
     Vec3d m_upguide;
-    // void update_basis(); // update basis when changing target or origin
 };
 #endif

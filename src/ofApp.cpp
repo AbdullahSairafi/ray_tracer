@@ -11,9 +11,7 @@ void ofApp::setup(){
     cout << "light location = " << lights[0] << endl;
     cam = new PrespectiveCamera{Point{0.0, 0.0, 2.0}, Point{}, Vec3d{0.0, 1.0, 0.0}};
     cam->print_info();
-    colorPixels.allocate(w, h, OF_PIXELS_RGB);
-    ray_tracer();
-    texColor.allocate(colorPixels);
+    
 }
 
 //--------------------------------------------------------------
@@ -24,19 +22,22 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     // ofSetHexColor(0xffffff);
+    colorPixels.allocate(w, h, OF_PIXELS_RGB);
+    ray_tracer();
+    texColor.allocate(colorPixels);
 	texColor.draw(0, 0);
 }
 
 void ofApp::add_shapes(){
-    Sphere *sph0{new Sphere{Point(-1, 0.0,0.0), 0.5, Color(128, 0, 32)}};
-    Sphere *sph1{new Sphere{Point(1, -0.5,0.0), 0.5, Color(25, 90, 43)}};
+    Sphere *sph0{new Sphere{Point(-0.5, 0.0, 0.0), 0.5, Color(128, 0, 32)}};
+    Sphere *sph1{new Sphere{Point(0.5, 0.0, 0.0), 0.5, Color(25, 90, 43)}};
     pShapes.push_back(sph0);
     pShapes.push_back(sph1);
 }
 
 void ofApp::add_lights(){
     lights.push_back(Point{0.0, 3.0, 0.0});
-    // lights.push_back(Point{3.0, 3.0, 0.0});
+    lights.push_back(Point{3.0, 3.0, 0.0});
 }
 
 bool ofApp::check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, double &t_up){
@@ -105,7 +106,7 @@ void ofApp::ray_tracer(){
             // start from top left corner of the screen.
             double u = l + ((r - l) * (i + 0.5)) / (double)w;
             double v = tp - ((tp - bm) * (j + 0.5)) / (double)h;
-            
+
             Ray ray{cam->make_ray(u, v)};
             Shape *hit_obj = nullptr;
             double t = std::numeric_limits<double>::max();
@@ -114,8 +115,8 @@ void ofApp::ray_tracer(){
                 // cout << "rbg = " << col.get_r() << " " << col.get_g() << " " << col.get_b() << endl;
                 colorPixels.setColor(i, j, ofColor(col.get_r(), col.get_g(), col.get_b()));
             }
-            else{ // backgroud color
-                colorPixels.setColor(i, j, ofColor(255, 255, 255));
+            else{ // backgroud color (black)
+                colorPixels.setColor(i, j, ofColor(0, 0, 0));
             }
         }
     }
@@ -124,6 +125,45 @@ void ofApp::ray_tracer(){
 }
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+
+    // camera movements:
+    switch (key)
+    {
+    case 'w':
+        cam->move_camera('u');
+        break;
+    case 'a':
+        cam->move_camera('l');
+        break;
+    case 's':
+        cam->move_camera('d');
+        break;
+    case 'd':
+        cam->move_camera('r');
+        break;
+    case 'f':
+        cam->move_camera('f');
+        break;
+    case 'b':
+        cam->move_camera('b');
+        break;
+    case 'j': // left arrow
+        // cout << "left arrow clicked" << endl;
+        cam->move_target('l');
+        break;
+    case 'i': // up arrow
+        cam->move_target('u');
+        break;
+    case 'l': // right arrow
+        cam->move_target('r');
+        break;
+    case 'k': // down arrown
+        cam->move_target('d');
+        break;
+    
+    default:
+        break;
+    }
     // when exsiting, free allocated resources.
     if(key == 27){
         cout << "good bye" << endl;
