@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxGui.h"
 #include <vector>
 #include "vector.h"
 #include "shapes.h"

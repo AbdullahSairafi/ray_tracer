@@ -30,6 +30,10 @@ public:
     // overloaded assignment operator
     Vec3d& operator=(const Vec3d &v);
 
+    // overloaded += and -= operators
+    Vec3d& operator+=(const Vec3d &v);
+    Vec3d& operator-=(const Vec3d &v);
+
     // vector operations dot, cross as friend functions
     friend double dot(const Vec3d &v1, const Vec3d &v2);
     friend Vec3d cross(const Vec3d &v1, const Vec3d &v2);

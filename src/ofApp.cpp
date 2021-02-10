@@ -11,9 +11,7 @@ void ofApp::setup(){
     cout << "light location = " << lights[0] << endl;
     cam = new PrespectiveCamera{Point{0.0, 0.0, 2.0}, Point{}, Vec3d{0.0, 1.0, 0.0}};
     cam->print_info();
-    colorPixels.allocate(w, h, OF_PIXELS_RGB);
-    ray_tracer();
-    texColor.allocate(colorPixels);
+    
 }
 
 //--------------------------------------------------------------
@@ -24,6 +22,9 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     // ofSetHexColor(0xffffff);
+    colorPixels.allocate(w, h, OF_PIXELS_RGB);
+    ray_tracer();
+    texColor.allocate(colorPixels);
 	texColor.draw(0, 0);
 }
 
@@ -124,6 +125,45 @@ void ofApp::ray_tracer(){
 }
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+
+    // camera movements:
+    switch (key)
+    {
+    case 'w':
+        cam->move_camera('u');
+        break;
+    case 'a':
+        cam->move_camera('l');
+        break;
+    case 's':
+        cam->move_camera('d');
+        break;
+    case 'd':
+        cam->move_camera('r');
+        break;
+    case 'f':
+        cam->move_camera('f');
+        break;
+    case 'b':
+        cam->move_camera('b');
+        break;
+    case 'j': // left arrow
+        // cout << "left arrow clicked" << endl;
+        cam->move_target('l');
+        break;
+    case 'i': // up arrow
+        cam->move_target('u');
+        break;
+    case 'l': // right arrow
+        cam->move_target('r');
+        break;
+    case 'k': // down arrown
+        cam->move_target('d');
+        break;
+    
+    default:
+        break;
+    }
     // when exsiting, free allocated resources.
     if(key == 27){
         cout << "good bye" << endl;
