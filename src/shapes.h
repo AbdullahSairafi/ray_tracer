@@ -3,6 +3,7 @@
 #include <iostream>
 #include "ray.h"
 #include "vector.h"
+#include "color.h"
 
 using namespace std;
 
@@ -10,7 +11,8 @@ enum class ShapeType {
     SPHERE,
     PLANE,
     CYLINDER,
-    CONE
+    CONE,
+    TRINAGLE
 };
 
 // shape class (an abstract class) that will be utilized as an iterator
@@ -21,7 +23,7 @@ public:
     Shape(Color col, ShapeType t);
     virtual ~Shape() = default;
     virtual Vec3d normal(const Point &p) const = 0;
-    virtual bool intersect(Ray &r, double &t) = 0;
+    virtual bool intersect(Ray &r, double &t, double t_low, double t_up) = 0;
     
     ShapeType get_type() const {return m_type;}
     Color get_color() const {return m_col;}
@@ -53,7 +55,7 @@ public:
      * to ray r. p(t) = origin + t * direction
      * note that t should be a postive value [0, inf)
     */
-    virtual bool intersect(Ray &r, double &t) override;
+    virtual bool intersect(Ray &r, double &t, double t_low, double t_up) override;
 
     const Point& get_center() const {return m_cen;}
     double get_radius() const {return m_rad;}
@@ -66,10 +68,15 @@ private:
 
 class Triangle : public Shape {
 public:
-    Triangle(const Vec3d vericies[3]);
+    // constructor takes three vertices (positions)
+    Triangle(const Vec3d &a, const Vec3d &b, const Vec3d &c, const Color &col);
+    virtual Vec3d normal(const Point &p) const override;
+    virtual bool intersect(Ray &r, double &t, double t_low, double t_up) override;
 
 private:
-    Vec3d vertices[3];
-    Vec3d normal;
-}
+    Vec3d m_vertices[3];
+    Vec3d m_normal;
+    double beta;
+    double gamma;
+};
 #endif

@@ -18,7 +18,7 @@ Vec3d Sphere::normal(const Point &p) const {
     return normal;
 }
 
-bool Sphere::intersect(Ray &r, double &t){
+bool Sphere::intersect(Ray &r, double &t, double t_low, double t_up){
     bool hit = false;
     // cout << "ray dir = " << r.get_dir() << endl;
     double a = dot(r.get_dir(), r.get_dir());
@@ -43,7 +43,60 @@ bool Sphere::intersect(Ray &r, double &t){
             t = min(t0, t1);
         }
     }
-
+    if(t < t_low || t > t_up){
+        return false;
+    }
     return hit;
 }
 
+Triangle::Triangle(const Vec3d &a, const Vec3d &b, const Vec3d &c, const Color &col) 
+    : Shape{col, ShapeType::TRINAGLE}
+{
+    m_vertices[0] = a;
+    m_vertices[1] = b;
+    m_vertices[2] = c;
+    m_normal = cross(b - a, c - a).normalize();
+}
+
+Vec3d Triangle::normal(const Point &p) const {
+    return m_normal;
+}
+
+bool Triangle::intersect(Ray &r, double &t, double t_low, double t_up){
+    
+    // check if ray and triangle normal are parallel (no intersection)
+    // if(abs(cross(r.get_dir(), m_normal)) < 0.0001){
+    //     return false;
+    // }
+    Vec3d AB = m_vertices[0] - m_vertices[1]; // A - B
+    Vec3d AC = m_vertices[0] - m_vertices[2]; // A - C
+    Vec3d AE = m_vertices[0] - r.get_orig(); // A - origin
+    Vec3d dir = r.get_dir();
+
+    
+    // constants
+    double k0 = AC.get_y() * dir.get_z() - dir.get_y() * AC.get_z();
+    double k1 = AC.get_z() * dir.get_x() - dir.get_z() * AC.get_x();
+    double k2 = AC.get_x() * dir.get_y() - dir.get_x() * AC.get_y();
+    double k3 = AB.get_x() * AE.get_y() - AB.get_y() * AE.get_x();
+    double k4 = AB.get_z() * AE.get_x() - AB.get_x() * AE.get_z();
+    double k5 = AB.get_y() * AE.get_z() - AB.get_z() * AE.get_y();
+
+    double M = AB.get_x() * k0 + AB.get_y() * k1 + AB.get_z() * k2;
+    beta = (AE.get_x() * k0 + AE.get_y() * k1 + AE.get_z() * k2) / M;
+    gamma = (dir.get_z() * k3 + dir.get_y() * k4 + dir.get_x() * k5) / M;
+    t = -1 * (AC.get_z() * k3 + AC.get_y() * k4 + AC.get_x() * k5) / M;
+
+    if(t < t_low || t > t_up){
+        return false;
+    }
+    if(gamma < 0.0 || gamma > 1.0){
+        return false;
+    }
+    if(beta < 0.0 || beta > 1.0 - gamma){
+        return false;
+    }
+
+    return true;
+   
+}

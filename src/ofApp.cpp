@@ -29,10 +29,12 @@ void ofApp::draw(){
 }
 
 void ofApp::add_shapes(){
-    Sphere *sph0{new Sphere{Point(-0.5, 0.0, 0.0), 0.5, Color(128, 0, 32)}};
-    Sphere *sph1{new Sphere{Point(0.5, 0.0, 0.0), 0.5, Color(25, 90, 43)}};
-    pShapes.push_back(sph0);
-    pShapes.push_back(sph1);
+    // Sphere *sph0{new Sphere{Point(-0.5, 0.0, 0.0), 0.5, Color(128, 0, 32)}};
+    // Sphere *sph1{new Sphere{Point(0.5, 0.0, 0.0), 0.5, Color(25, 90, 43)}};
+    // pShapes.push_back(sph0);
+    // pShapes.push_back(sph1);
+    Triangle *tr{new Triangle(Vec3d(-0.5, 0.0, 0.0), Vec3d(0.5, 0.0, 0.0), Vec3d(0.0, 0.5, 0.0), Color(200, 200, 200))};
+    pShapes.push_back(tr);
 }
 
 void ofApp::add_lights(){
@@ -42,9 +44,9 @@ void ofApp::add_lights(){
 
 bool ofApp::check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, double &t_up){
     bool hit = false;
-    double t;
+    double t = std::numeric_limits<double>::min(); // initilize to -inf
     for(int i = 0; i < pShapes.size(); i++){
-        if(pShapes[i]->intersect(view_ray, t) && t_low <= t && t < t_up){
+        if(pShapes[i]->intersect(view_ray, t, t_low, t_up)){
             hit = true;
             t_up = t;
             hit_obj = pShapes[i]; // update hit object
