@@ -59,5 +59,10 @@ Vec3d operator/(const Vec3d &v, double c);
 
 typedef Vec3d Point;
 
+struct Vec2d { // struct for texture cooridinates.
+    double x;
+    double y;
+};
+
 #endif
 

@@ -29,23 +29,23 @@ void ofApp::draw(){
 }
 
 void ofApp::add_shapes(){
-    // Sphere *sph0{new Sphere{Point(-0.5, 0.0, 0.0), 0.5, Color(128, 0, 32)}};
+    // Sphere *sph0{new Sphere{Point(0.2, 0.5, 0.2), 0.1, Color(128, 0, 32)}};
     // Sphere *sph1{new Sphere{Point(0.5, 0.0, 0.0), 0.5, Color(25, 90, 43)}};
     // pShapes.push_back(sph0);
     // pShapes.push_back(sph1);
-    Triangle *tr{new Triangle(Vec3d(-0.5, 0.0, 0.0), Vec3d(0.5, 0.0, 0.0), Vec3d(0.0, 0.5, 0.0), Color(200, 200, 200))};
+    Triangle *tr{new Triangle(Vec3d(0.0, 0.0, 0.0), Vec3d(1.5, 0.0, 0.0), Vec3d(0.0, 1.5, 0.0), Color(0, 100, 130))};
     pShapes.push_back(tr);
 }
 
 void ofApp::add_lights(){
-    lights.push_back(Point{0.0, 3.0, 0.0});
-    lights.push_back(Point{3.0, 3.0, 0.0});
+    lights.push_back(Point{1.0, 1.0, 1.0});
+    // lights.push_back(Point{3.0, 3.0, -1.0});
 }
 
 bool ofApp::check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, double &t_up){
     bool hit = false;
     double t = std::numeric_limits<double>::min(); // initilize to -inf
-    for(int i = 0; i < pShapes.size(); i++){
+    for(size_t i = 0; i < pShapes.size(); i++){
         if(pShapes[i]->intersect(view_ray, t, t_low, t_up)){
             hit = true;
             t_up = t;
@@ -62,7 +62,7 @@ Color ofApp::shading_model(Ray view_ray, Shape *hit_obj, double t){
     assert(hit_obj);
     Point intersection_pt = view_ray.get_orig() + t * view_ray.get_dir();
     Color pix_col = hit_obj->get_color() * ambient_intensity;
-    for(int i = 0; i < lights.size(); i++){
+    for(size_t i = 0; i < lights.size(); i++){
         if(!is_shadow(lights[i],  intersection_pt)){
             pix_col = pix_col + diffuse_color(lights[i], intersection_pt, hit_obj) + specular_color(lights[i], intersection_pt, hit_obj);
         }
@@ -169,7 +169,7 @@ void ofApp::keyPressed(int key){
     // when exsiting, free allocated resources.
     if(key == 27){
         cout << "good bye" << endl;
-        for(int i = 0; i < pShapes.size(); i++){
+        for(size_t i = 0; i < pShapes.size(); i++){
             delete pShapes[i];
         }
         // free cam pointer
