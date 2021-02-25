@@ -88,13 +88,15 @@ struct Vertex{
 
 class Mesh : public Shape{
 public:
-    Mesh(vector<Vertex> &verts, int **&verts_idx);
+    Mesh(vector<Vertex> &verts, vector<Vec3i> &face_verts_idx);
     virtual Vec3d normal(const Point &p) const override;
     virtual bool intersect(Ray &r, double &t, double t_low, double t_up) override;
+    ~Mesh();
 private:
     vector<Vertex> m_verts;
-    int **m_verts_idx; // 2d array to get the order of vertices for each triangle
-    int num_verts;
-    int num_triangles;
+    vector<Vec3i> face_verts_idx; // triangular faces
+    int num_verts; // m_verts.size()
+    int num_triangles; // faces.size()
 }
+
 #endif

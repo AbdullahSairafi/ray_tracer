@@ -59,10 +59,16 @@ Vec3d operator/(const Vec3d &v, double c);
 
 typedef Vec3d Point;
 
-struct Vec2d { // struct for texture cooridinates.
+// struct for texture cooridinates.
+struct Vec2d { 
     double x;
     double y;
 };
+
+// struct for vertix index. (order of verices in a triangle face)
+struct Vec3i {
+    int v[3];
+}
 
 #endif
 
