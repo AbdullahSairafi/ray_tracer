@@ -1,6 +1,8 @@
 #ifndef SHAPES_H
 #define SHAPES_H
 #include <iostream>
+#include <vector>
+//own libs
 #include "ray.h"
 #include "vector.h"
 #include "color.h"
@@ -84,7 +86,15 @@ struct Vertex{
     Vec3d position;
     Vec3d normal;
     Vec2d tex_coord;
-}
+};
+
+class Face_Indices{
+public:
+    vector<Vec3i> positions_v; // triangular connection between position indinces
+    vector<Vec3i> normals_v; // indices of normals
+    vector<Vec3i> texcoords_v; // indices of texcoords
+    // overload operator=
+};
 
 class Mesh : public Shape{
 public:
@@ -93,10 +103,12 @@ public:
     virtual bool intersect(Ray &r, double &t, double t_low, double t_up) override;
     ~Mesh();
 private:
-    vector<Vertex> m_verts;
-    vector<Vec3i> face_verts_idx; // triangular faces
-    int num_verts; // m_verts.size()
-    int num_triangles; // faces.size()
-}
+    vector<Vec3d> m_positions_v;
+    vector<Vec3d> m_normals_v;
+    vector<Vec2d> m_texcoords_v;
+    Face_Indices m_indices;
+    int num_verts; // positions_.size()
+    int num_triangles; // positions_indices_v.size()
+};
 
 #endif
