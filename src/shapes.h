@@ -14,7 +14,8 @@ enum class ShapeType {
     PLANE,
     CYLINDER,
     CONE,
-    TRINAGLE
+    TRINAGLE,
+    MESH
 };
 
 // shape class (an abstract class) that will be utilized as an iterator
@@ -82,12 +83,6 @@ private:
     double gamma;
 };
 
-struct Vertex{
-    Vec3d position;
-    Vec3d normal;
-    Vec2d tex_coord;
-};
-
 class Face_Indices{
 public:
     vector<Vec3i> positions_v; // triangular connection between position indinces
@@ -98,15 +93,16 @@ public:
 
 class Mesh : public Shape{
 public:
-    Mesh(vector<Vertex> &verts, vector<Vec3i> &face_verts_idx);
+    Mesh(vector<Vec3d> *positions_, vector<Vec3d> *normals_p, vector<Vec2d> *texcoords_p, 
+         Face_Indices *indices);
     virtual Vec3d normal(const Point &p) const override;
     virtual bool intersect(Ray &r, double &t, double t_low, double t_up) override;
-    ~Mesh();
-private:
-    vector<Vec3d> m_positions_v;
-    vector<Vec3d> m_normals_v;
-    vector<Vec2d> m_texcoords_v;
-    Face_Indices m_indices;
+    // ~Mesh();
+//private:
+    vector<Vec3d> *m_positions_p;
+    vector<Vec3d> *m_normals_p;
+    vector<Vec2d> *m_texcoords_p;
+    Face_Indices *m_indices_p;
     int num_verts; // positions_.size()
     int num_triangles; // positions_indices_v.size()
 };

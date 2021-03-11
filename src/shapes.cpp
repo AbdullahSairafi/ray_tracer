@@ -100,3 +100,20 @@ bool Triangle::intersect(Ray &r, double &t, double t_low, double t_up){
     return true;
    
 }
+
+Mesh::Mesh(vector<Vec3d> *positions_p, vector<Vec3d> *normals_p, vector<Vec2d> *texcoords_p, 
+         Face_Indices *indices_p)
+        : m_positions_p{positions_p}, m_normals_p{normals_p}, m_texcoords_p{texcoords_p},
+         m_indices_p{indices_p}, Shape{Color(0,0,0), ShapeType::TRINAGLE}
+{
+    num_verts = m_positions_p->size();
+    num_triangles = m_indices_p->positions_v.size();
+}
+
+Vec3d Mesh::normal(const Point &p) const {
+    return Vec3d();
+}
+
+bool Mesh::intersect(Ray &r, double &t, double t_low, double t_up){
+    return true;
+}
