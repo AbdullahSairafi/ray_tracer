@@ -58,8 +58,7 @@ void load_obj_file(string &filename, vector<Vec3d> &positions_v,
             normals_v.push_back(Vec3d(x, y, z));
         }
         else if(prefix == "f"){
-            int counter = 0;
-            int temp;
+            string element; // element is v/[vt]/[vn], vt, vn are optional  
 
             // vectors to store file info indices
             vector<int> verts_indices;
@@ -67,35 +66,44 @@ void load_obj_file(string &filename, vector<Vec3d> &positions_v,
             vector<int> normals_indices;
 
             // read the verices indcies
-			while (ss >> temp)
-			{
-				//Pushing indices into correct arrays
-				if (counter == 0)
-					verts_indices.push_back(temp);
-				else if (counter == 1)
-					texcoords_indices.push_back(temp);
-				else if (counter == 2)
-					normals_indices.push_back(temp);
+			while (ss >> element){
+                int counter = 0;
+                stringstream element_ss;
+                element_ss.str(element);
+                int val;
+                while (element_ss >> val){
+                    //Pushing indices into correct arrays
+                    if (counter == 0)
+                        verts_indices.push_back(val);
+                    else if (counter == 1)
+                        texcoords_indices.push_back(val);
+                    else if (counter == 2)
+                        normals_indices.push_back(val);
 
-				//Handling characters
-				if (ss.peek() == '/')
-				{
-					counter++;
-					ss.ignore(1, '/');
-                    if(ss.peek() == '/'){
+                    //Handling characters
+                    if (ss.peek() == '/')
+                    {
                         counter++;
                         ss.ignore(1, '/');
+                        if(ss.peek() == '/'){
+                            counter++;
+                            ss.ignore(1, '/');
+                        }
                     }
-				}
-				else if (ss.peek() == ' ')
-				{
-					counter++;
-					ss.ignore(1, ' ');
-				}
+                    else if (ss.peek() == ' ')
+                    {
+                        counter++;
+                        ss.ignore(1, ' ');
+                    }
 
-				//Reset the counter
-				if (counter > 2)
-					counter = 0;
+                    //Reset the counter
+                    if (counter > 2){
+                        counter = 0;
+                    }
+					
+                }
+                
+				
 			}
             
             // triangulate the face and push indices into faces vector
@@ -126,7 +134,8 @@ void load_obj_file(string &filename, vector<Vec3d> &positions_v,
             }
 
         }
-        else{ // do nothing for now
+        else{ 
+            // do nothing for now
         }
     }
 
