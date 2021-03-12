@@ -65,45 +65,38 @@ void load_obj_file(string &filename, vector<Vec3d> &positions_v,
             vector<int> texcoords_indices;
             vector<int> normals_indices;
 
-            // read the verices indcies
+            // read the face indcies (vertex, texcoord, normal)
 			while (ss >> element){
                 int counter = 0;
                 stringstream element_ss;
+                element_ss.str("");
+                element_ss.clear();
                 element_ss.str(element);
                 int val;
                 while (element_ss >> val){
                     //Pushing indices into correct arrays
-                    if (counter == 0)
+                    if (counter == 0){
                         verts_indices.push_back(val);
-                    else if (counter == 1)
+                    }
+                    else if (counter == 1){
                         texcoords_indices.push_back(val);
-                    else if (counter == 2)
+                    }
+                    else if (counter == 2){
                         normals_indices.push_back(val);
-
+                    }
+                    else{}
                     //Handling characters
-                    if (ss.peek() == '/')
-                    {
+                    if (element_ss.peek() == '/'){
                         counter++;
-                        ss.ignore(1, '/');
-                        if(ss.peek() == '/'){
+                        element_ss.ignore(1, '/');
+                        if(element_ss.peek() == '/'){
                             counter++;
-                            ss.ignore(1, '/');
+                            element_ss.ignore(1, '/');
                         }
                     }
-                    else if (ss.peek() == ' ')
-                    {
-                        counter++;
-                        ss.ignore(1, ' ');
-                    }
-
-                    //Reset the counter
-                    if (counter > 2){
-                        counter = 0;
-                    }
-					
                 }
-                
-				
+                // clear element
+                element = "";
 			}
             
             // triangulate the face and push indices into faces vector
