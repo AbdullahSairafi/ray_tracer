@@ -42,15 +42,25 @@ void ofApp::add_lights(){
     // lights.push_back(Point{3.0, 3.0, -1.0});
 }
 
-bool ofApp::check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, double &t_up){
+bool ofApp::check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, double &t_up, int &t_idx){
     bool hit = false;
     double t = std::numeric_limits<double>::min(); // initilize to -inf
     for(size_t i = 0; i < pShapes.size(); i++){
-        if(pShapes[i]->intersect(view_ray, t, t_low, t_up)){
-            hit = true;
-            t_up = t;
-            hit_obj = pShapes[i]; // update hit object
+        if(pShapes[i]->get_type() == ShapeType::MESH){ // call the intersect function for mesh type
+            if(pShapes[i]->intersect(view_ray, t, t_low, t_up, t_idx)){
+                hit = true;
+                t_up = t;
+                hit_obj = pShapes[i]; // update hit object
+            }
         }
+        else{
+            if(pShapes[i]->intersect(view_ray, t, t_low, t_up)){
+                hit = true;
+                t_up = t;
+                hit_obj = pShapes[i]; // update hit object
+            }
+        }
+        
     }
     if(hit_obj == nullptr){ // enforce a valid object in hit_obj pointer.
         return false;
@@ -80,13 +90,20 @@ bool ofApp::is_shadow(const Point &light_src, const Point &intersection_pt){
     Point sh_ray_origin = intersection_pt + light_dir * epsilon; // add offset to avoid self-intersection
     Ray shadow_ray{sh_ray_origin, light_dir};
     double t_up = std::numeric_limits<double>::max();
-    is_shadow = check_intersection(shadow_ray, shadow_obj, 0.0, t_up);
+    int temp_idx;
+    is_shadow = check_intersection(shadow_ray, shadow_obj, 0.0, t_up, temp_idx);
     return is_shadow;
 }
 
 Color ofApp::diffuse_color(const Point &light, const Point &intersection_pt, Shape *hit_obj){
     Vec3d light_dir = (light - intersection_pt).normalize();
-    Vec3d normal = hit_obj->normal(intersection_pt);
+    Vec3d normal;
+    if(hit_obj->get_type() == ShapeType::MESH){
+        normal = hit_obj->normal(tri_idx);
+    }
+    else{
+        normal = hit_obj->normal(intersection_pt);
+    }
     Color diff_col = hit_obj->get_color() * light_intensity * std::max(0.0, dot(normal, light_dir));
     return diff_col;
 }
@@ -96,7 +113,13 @@ Color ofApp::specular_color(const Point &light, const Point &intersection_pt, Sh
     Vec3d light_dir = (light - intersection_pt).normalize();
     Vec3d v = (cam->get_orig() - intersection_pt).normalize();
     Vec3d h = (light_dir + v).normalize();
-    Vec3d normal = hit_obj->normal(intersection_pt);
+    Vec3d normal;
+    if(hit_obj->get_type() == ShapeType::MESH){
+        normal = hit_obj->normal(tri_idx);
+    }
+    else{
+        normal = hit_obj->normal(intersection_pt);
+    }
     Color spec_col = Color(128, 128, 128) * light_intensity * std::pow(std::max(0.0, dot(normal, h)), 100);
     return spec_col;
 }
@@ -112,8 +135,9 @@ void ofApp::ray_tracer(){
             Ray ray{cam->make_ray(u, v)};
             Shape *hit_obj = nullptr;
             double t = std::numeric_limits<double>::max();
-            if(check_intersection(ray, hit_obj, 0.0, t)){ 
-                Color col = shading_model(ray, hit_obj, t);
+            int tri_idx = -1;
+            if(check_intersection(ray, hit_obj, 0.0, t, tri_idx)){ 
+                Color col = shading_model(ray, hit_obj, t, tri_idx);
                 // cout << "rbg = " << col.get_r() << " " << col.get_g() << " " << col.get_b() << endl;
                 colorPixels.setColor(i, j, ofColor(col.get_r(), col.get_g(), col.get_b()));
             }

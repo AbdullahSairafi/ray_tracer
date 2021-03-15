@@ -110,10 +110,81 @@ Mesh::Mesh(vector<Vec3d> *positions_p, vector<Vec3d> *normals_p, vector<Vec2d> *
     num_triangles = m_indices_p->positions_v.size();
 }
 
-Vec3d Mesh::normal(const Point &p) const {
-    return Vec3d();
+Vec3d Mesh::normal(const int tri_idx) const {
+    Vec3d normal;
+    // retreive normal from mesh info
+    if(m_normals_p->size() > 0){
+        normal = m_normals_p->at(m_indices_p->normals_v[tri_idx].v[0]);
+    }
+    else{ // calculate normal from triangle vertices
+        // retreive the vertices to calculate normal (arrangement must be counterclock-wise for verts)
+        Vec3d a = m_positions_p->at(m_indices_p->positions_v[tri_idx].v[0]);
+        Vec3d b = m_positions_p->at(m_indices_p->positions_v[tri_idx].v[1]);
+        Vec3d c = m_positions_p->at(m_indices_p->positions_v[tri_idx].v[2]);
+
+        // edges
+        Vec3d ba = b - a;
+        Vec3d ca = c - a;
+        
+        normal = cross(ba, ca).normalize();
+
+    }
+    return normal;
 }
 
-bool Mesh::intersect(Ray &r, double &t, double t_low, double t_up){
+bool Mesh::intersect(Ray &r, double &t, double t_low, double t_up, int &tri_idx){
+    bool hit = false;
+    for (size_t i = 0; i < num_triangles; i++){
+        // retreive the vertices for each face and check if ray intersects the formed triangle
+        Vec3d a = m_positions_p->at(m_indices_p->positions_v[i].v[0]);
+        Vec3d b = m_positions_p->at(m_indices_p->positions_v[i].v[1]);
+        Vec3d c = m_positions_p->at(m_indices_p->positions_v[i].v[2]);
+
+        // check intersection with triangle
+        if(triangle_intersect(r, a, b, c, t, t_low, t_up)){
+            // update upper limit (to get closest triangle intersections)
+            t_up = t;
+            hit = true;
+            tri_idx = i; // record the index of the triangle
+        }
+        
+    }
+    return hit;
+    
+}
+
+bool triangle_intersect(Ray &r, const Vec3d &a, const Vec3d &b, const Vec3d &c, 
+                        double &t, double t_low, double t_up)
+{
+    Vec3d AB = a - b; // A - B
+    Vec3d AC = a - c; // A - C
+    Vec3d AE = a - r.get_orig(); // A - origin
+    Vec3d dir = r.get_dir();
+
+    
+    // constants
+    double k0 = AC.get_y() * dir.get_z() - dir.get_y() * AC.get_z();
+    double k1 = AC.get_z() * dir.get_x() - dir.get_z() * AC.get_x();
+    double k2 = AC.get_x() * dir.get_y() - dir.get_x() * AC.get_y();
+    double k3 = AB.get_x() * AE.get_y() - AB.get_y() * AE.get_x();
+    double k4 = AB.get_z() * AE.get_x() - AB.get_x() * AE.get_z();
+    double k5 = AB.get_y() * AE.get_z() - AB.get_z() * AE.get_y();
+
+    double M = AB.get_x() * k0 + AB.get_y() * k1 + AB.get_z() * k2;
+    beta = (AE.get_x() * k0 + AE.get_y() * k1 + AE.get_z() * k2) / M;
+    gamma = (dir.get_z() * k3 + dir.get_y() * k4 + dir.get_x() * k5) / M;
+    t = -1 * (AC.get_z() * k3 + AC.get_y() * k4 + AC.get_x() * k5) / M;
+
+    if(t < t_low || t > t_up){
+        return false;
+    }
+    if(gamma < 0.0 || gamma > 1.0){
+        return false;
+    }
+    if(beta < 0.0 || beta > 1.0 - gamma){
+        return false;
+    }
+
     return true;
+   
 }

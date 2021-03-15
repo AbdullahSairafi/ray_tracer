@@ -31,7 +31,7 @@ public:
 	
 	void add_shapes();
 	void add_lights();
-	bool check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, double &t_up);
+	bool check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, double &t_up, int &t_idx);
 	Color shading_model(Ray view_ray, Shape *hit_obj, double t);
 	bool is_shadow(const Point &light_src, const Point &intersection_pt);
 	Color diffuse_color(const Point &light, const Point &intersection_pt, Shape *hit_obj);
@@ -51,5 +51,6 @@ private:
 	double r = 2.0;
 	double bm = -1.5;
 	double tp = 1.5;
+	int tri_idx;
 };
 

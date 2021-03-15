@@ -26,8 +26,9 @@ public:
     Shape(Color col, ShapeType t);
     virtual ~Shape() = default;
     virtual Vec3d normal(const Point &p) const = 0;
+    virtual Vec3d normal(const int tri_idx) const = 0;
     virtual bool intersect(Ray &r, double &t, double t_low, double t_up) = 0;
-    
+    virtual bool intersect(Ray &r, double &t, double t_low, double t_up, int &tri_idx) = 0;
     ShapeType get_type() const {return m_type;}
     Color get_color() const {return m_col;}
  
@@ -51,6 +52,10 @@ public:
      * @p: point to calculate normal at.
     */
     virtual Vec3d normal(const Point &p) const override;
+    
+    virtual Vec3d normal(const int tri_idx) const override {
+        return Vec3d();
+    }
 
     /* intersect: finds an intersection point with the sphere if exsists
      * @r: ray to to be check if intersects the sphere.
@@ -59,6 +64,10 @@ public:
      * note that t should be a postive value [0, inf)
     */
     virtual bool intersect(Ray &r, double &t, double t_low, double t_up) override;
+
+    virtual bool intersect(Ray &r, double &t, double t_low, double t_up, int &tri_idx) override {
+        return false;
+    }
 
     const Point& get_center() const {return m_cen;}
     double get_radius() const {return m_rad;}
@@ -74,8 +83,14 @@ public:
     // constructor takes three vertices (positions)
     Triangle(const Vec3d &a, const Vec3d &b, const Vec3d &c, const Color &col);
     virtual Vec3d normal(const Point &p) const override;
+    virtual Vec3d normal(const int tri_idx) const override {
+        return Vec3d();
+    }
     virtual bool intersect(Ray &r, double &t, double t_low, double t_up) override;
-
+    
+    virtual bool intersect(Ray &r, double &t, double t_low, double t_up, int &tri_idx) override {
+        return false;
+    }
 private:
     Vec3d m_vertices[3];
     Vec3d m_normal;
@@ -95,8 +110,10 @@ class Mesh : public Shape{
 public:
     Mesh(vector<Vec3d> *positions_, vector<Vec3d> *normals_p, vector<Vec2d> *texcoords_p, 
          Face_Indices *indices);
-    virtual Vec3d normal(const Point &p) const override;
-    virtual bool intersect(Ray &r, double &t, double t_low, double t_up) override;
+    virtual Vec3d normal(const Point &p) const override {return Vec3d();}
+    virtual Vec3d normal(const int tri_idx) const override;
+    virtual bool intersect(Ray &r, double &t, double t_low, double t_up) override {return false;}
+    virtual bool intersect(Ray &r, double &t, double t_low, double t_up, int &tri_idx) override;
     // ~Mesh();
 //private:
     vector<Vec3d> *m_positions_p;
@@ -106,5 +123,8 @@ public:
     int num_verts; // positions_.size()
     int num_triangles; // positions_indices_v.size()
 };
+
+bool triangle_intersect(Ray &r, const Vec3d &a, const Vec3d &b, const Vec3d &c, 
+                        double &t, double t_low, double t_up);
 
 #endif
