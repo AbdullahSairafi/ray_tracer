@@ -68,7 +68,7 @@ struct Vec2d {
 // struct for vertix index. (order of verices in a triangle face)
 struct Vec3i {
     int v[3];
-}
+};
 
 #endif
 

@@ -3,15 +3,16 @@
 #include <algorithm> 
 #include <cmath>
 #include <cassert>
+
+#include "obj_loader.h"
 //--------------------------------------------------------------
 void ofApp::setup(){
     add_shapes();
     add_lights();
-    cout << "num lights = " << lights.size() << endl;
-    cout << "light location = " << lights[0] << endl;
-    cam = new PrespectiveCamera{Point{0.0, 0.0, 2.0}, Point{}, Vec3d{0.0, 1.0, 0.0}};
+    cam = new PrespectiveCamera{Point{0.0, 0.0, 6.0}, Point{}, Vec3d{0.0, 1.0, 0.0}};
     cam->print_info();
-    
+    colorPixels.allocate(w, h, OF_PIXELS_RGB);
+   
 }
 
 //--------------------------------------------------------------
@@ -22,19 +23,25 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     // ofSetHexColor(0xffffff);
-    colorPixels.allocate(w, h, OF_PIXELS_RGB);
+    // colorPixels.allocate(w, h, OF_PIXELS_RGB);
     ray_tracer();
     texColor.allocate(colorPixels);
 	texColor.draw(0, 0);
 }
 
 void ofApp::add_shapes(){
-    // Sphere *sph0{new Sphere{Point(0.2, 0.5, 0.2), 0.1, Color(128, 0, 32)}};
-    // Sphere *sph1{new Sphere{Point(0.5, 0.0, 0.0), 0.5, Color(25, 90, 43)}};
-    // pShapes.push_back(sph0);
-    // pShapes.push_back(sph1);
-    Triangle *tr{new Triangle(Vec3d(0.0, 0.0, 0.0), Vec3d(1.5, 0.0, 0.0), Vec3d(0.0, 1.5, 0.0), Color(0, 100, 130))};
-    pShapes.push_back(tr);
+    // Triangle *tr{new Triangle(Vec3d(0.0, 0.0, 0.0), Vec3d(1.5, 0.0, 0.0), Vec3d(0.0, 1.5, 0.0), Color(0, 100, 130))};
+   
+    // load the obj file
+    string filename = "/home/as/Desktop/projects/cpp/ray_tracer/src/cube.obj";
+    load_obj_file(filename, positions_v, normals_v, texcoords_v, indices);
+    Mesh mesh(&positions_v, &normals_v, &texcoords_v, &indices);
+    Mesh *cube = new Mesh(&positions_v, &normals_v, &texcoords_v, &indices);
+    pShapes.push_back(cube);
+    cout << "number of objects = " << pShapes.size() << endl;
+    if(pShapes[0]->get_type() == ShapeType::MESH){
+        cout << "type = mesh" << endl;
+    }
 }
 
 void ofApp::add_lights(){
@@ -52,6 +59,7 @@ bool ofApp::check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, doub
                 t_up = t;
                 hit_obj = pShapes[i]; // update hit object
             }
+            // cout << "inside check_intersection, type=Mesh" << endl;
         }
         else{
             if(pShapes[i]->intersect(view_ray, t, t_low, t_up)){
@@ -137,7 +145,8 @@ void ofApp::ray_tracer(){
             double t = std::numeric_limits<double>::max();
             int tri_idx = -1;
             if(check_intersection(ray, hit_obj, 0.0, t, tri_idx)){ 
-                Color col = shading_model(ray, hit_obj, t, tri_idx);
+                // cout << "found intersection" << endl;
+                Color col = shading_model(ray, hit_obj, t);
                 // cout << "rbg = " << col.get_r() << " " << col.get_g() << " " << col.get_b() << endl;
                 colorPixels.setColor(i, j, ofColor(col.get_r(), col.get_g(), col.get_b()));
             }

@@ -104,7 +104,7 @@ bool Triangle::intersect(Ray &r, double &t, double t_low, double t_up){
 Mesh::Mesh(vector<Vec3d> *positions_p, vector<Vec3d> *normals_p, vector<Vec2d> *texcoords_p, 
          Face_Indices *indices_p)
         : m_positions_p{positions_p}, m_normals_p{normals_p}, m_texcoords_p{texcoords_p},
-         m_indices_p{indices_p}, Shape{Color(0,0,0), ShapeType::TRINAGLE}
+         m_indices_p{indices_p}, Shape{Color(0,0,100), ShapeType::MESH}
 {
     num_verts = m_positions_p->size();
     num_triangles = m_indices_p->positions_v.size();
@@ -171,8 +171,8 @@ bool triangle_intersect(Ray &r, const Vec3d &a, const Vec3d &b, const Vec3d &c,
     double k5 = AB.get_y() * AE.get_z() - AB.get_z() * AE.get_y();
 
     double M = AB.get_x() * k0 + AB.get_y() * k1 + AB.get_z() * k2;
-    beta = (AE.get_x() * k0 + AE.get_y() * k1 + AE.get_z() * k2) / M;
-    gamma = (dir.get_z() * k3 + dir.get_y() * k4 + dir.get_x() * k5) / M;
+    double beta = (AE.get_x() * k0 + AE.get_y() * k1 + AE.get_z() * k2) / M;
+    double gamma = (dir.get_z() * k3 + dir.get_y() * k4 + dir.get_x() * k5) / M;
     t = -1 * (AC.get_z() * k3 + AC.get_y() * k4 + AC.get_x() * k5) / M;
 
     if(t < t_low || t > t_up){

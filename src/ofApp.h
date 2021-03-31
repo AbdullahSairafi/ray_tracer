@@ -7,6 +7,7 @@
 #include "shapes.h"
 #include "ray.h"
 #include "camera.h"
+// #include "obj_loader.h"
 using namespace std;
 
 class ofApp : public ofBaseApp{
@@ -52,5 +53,12 @@ private:
 	double bm = -1.5;
 	double tp = 1.5;
 	int tri_idx;
+
+	// TODO: remove later!
+	// initilize neccessary vars
+    vector<Vec3d> positions_v;
+    vector<Vec3d> normals_v;
+    vector<Vec2d> texcoords_v;
+    Face_Indices indices;
 };
 
