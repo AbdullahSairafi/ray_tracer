@@ -19,7 +19,7 @@ void PrespectiveCamera::set_basis(const Vec3d &upguide){
 }
 
 void PrespectiveCamera::move_camera(char direction){
-    double c = 0.2; // offset step size
+    double c = 0.05; // offset step size
     Vec3d offset;
     switch (direction)
     {

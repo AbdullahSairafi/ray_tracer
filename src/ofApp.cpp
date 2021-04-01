@@ -9,7 +9,7 @@
 void ofApp::setup(){
     add_shapes();
     add_lights();
-    cam = new PrespectiveCamera{Point{0.0, 0.0, 6.0}, Point{}, Vec3d{0.0, 1.0, 0.0}};
+    cam = new PrespectiveCamera{Point{0.0, 0.0, 3.0}, Point{}, Vec3d{0.0, 1.0, 0.0}};
     cam->print_info();
     colorPixels.allocate(w, h, OF_PIXELS_RGB);
    
@@ -46,7 +46,7 @@ void ofApp::add_shapes(){
 
 void ofApp::add_lights(){
     lights.push_back(Point{1.0, 1.0, 1.0});
-    // lights.push_back(Point{3.0, 3.0, -1.0});
+    lights.push_back(Point{3.0, 3.0, -1.0});
 }
 
 bool ofApp::check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, double &t_up, int &t_idx){
@@ -59,7 +59,6 @@ bool ofApp::check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, doub
                 t_up = t;
                 hit_obj = pShapes[i]; // update hit object
             }
-            // cout << "inside check_intersection, type=Mesh" << endl;
         }
         else{
             if(pShapes[i]->intersect(view_ray, t, t_low, t_up)){
@@ -76,13 +75,13 @@ bool ofApp::check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, doub
     return hit;
 }
 
-Color ofApp::shading_model(Ray view_ray, Shape *hit_obj, double t){
+Color ofApp::shading_model(Ray view_ray, Shape *hit_obj, double t, int t_idx){
     assert(hit_obj);
     Point intersection_pt = view_ray.get_orig() + t * view_ray.get_dir();
     Color pix_col = hit_obj->get_color() * ambient_intensity;
     for(size_t i = 0; i < lights.size(); i++){
         if(!is_shadow(lights[i],  intersection_pt)){
-            pix_col = pix_col + diffuse_color(lights[i], intersection_pt, hit_obj) + specular_color(lights[i], intersection_pt, hit_obj);
+            pix_col = pix_col + diffuse_color(lights[i], intersection_pt, hit_obj, t_idx) + specular_color(lights[i], intersection_pt, hit_obj, t_idx);
         }
     }
     
@@ -103,11 +102,11 @@ bool ofApp::is_shadow(const Point &light_src, const Point &intersection_pt){
     return is_shadow;
 }
 
-Color ofApp::diffuse_color(const Point &light, const Point &intersection_pt, Shape *hit_obj){
+Color ofApp::diffuse_color(const Point &light, const Point &intersection_pt, Shape *hit_obj, int t_idx){
     Vec3d light_dir = (light - intersection_pt).normalize();
     Vec3d normal;
     if(hit_obj->get_type() == ShapeType::MESH){
-        normal = hit_obj->normal(tri_idx);
+        normal = hit_obj->normal(t_idx);
     }
     else{
         normal = hit_obj->normal(intersection_pt);
@@ -116,14 +115,14 @@ Color ofApp::diffuse_color(const Point &light, const Point &intersection_pt, Sha
     return diff_col;
 }
 
-Color ofApp::specular_color(const Point &light, const Point &intersection_pt, Shape *hit_obj){
+Color ofApp::specular_color(const Point &light, const Point &intersection_pt, Shape *hit_obj, int t_idx){
     // for info look up this wiki link
     Vec3d light_dir = (light - intersection_pt).normalize();
     Vec3d v = (cam->get_orig() - intersection_pt).normalize();
     Vec3d h = (light_dir + v).normalize();
     Vec3d normal;
     if(hit_obj->get_type() == ShapeType::MESH){
-        normal = hit_obj->normal(tri_idx);
+        normal = hit_obj->normal(t_idx);
     }
     else{
         normal = hit_obj->normal(intersection_pt);
@@ -145,9 +144,7 @@ void ofApp::ray_tracer(){
             double t = std::numeric_limits<double>::max();
             int tri_idx = -1;
             if(check_intersection(ray, hit_obj, 0.0, t, tri_idx)){ 
-                // cout << "found intersection" << endl;
-                Color col = shading_model(ray, hit_obj, t);
-                // cout << "rbg = " << col.get_r() << " " << col.get_g() << " " << col.get_b() << endl;
+                Color col = shading_model(ray, hit_obj, t, tri_idx);
                 colorPixels.setColor(i, j, ofColor(col.get_r(), col.get_g(), col.get_b()));
             }
             else{ // backgroud color (black)

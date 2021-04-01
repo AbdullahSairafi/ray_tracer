@@ -33,10 +33,10 @@ public:
 	void add_shapes();
 	void add_lights();
 	bool check_intersection(Ray view_ray, Shape *&hit_obj, double t_low, double &t_up, int &t_idx);
-	Color shading_model(Ray view_ray, Shape *hit_obj, double t);
+	Color shading_model(Ray view_ray, Shape *hit_obj, double t, int t_idx);
 	bool is_shadow(const Point &light_src, const Point &intersection_pt);
-	Color diffuse_color(const Point &light, const Point &intersection_pt, Shape *hit_obj);
-	Color specular_color(const Point &light, const Point &intersection_pt, Shape *hit_obj);
+	Color diffuse_color(const Point &light, const Point &intersection_pt, Shape *hit_obj, int t_idx);
+	Color specular_color(const Point &light, const Point &intersection_pt, Shape *hit_obj, int t_idx);
 	void ray_tracer();
 private:
 	int w = 2048;
